@@ -10,7 +10,8 @@
     {
       "name": "cursor-plugin",
       "source": ".",
-      "description": "Matt Pocock engineering and productivity skills"
+      "description": "Matt Pocock engineering and productivity skills",
+      "logo": "assets/logo.svg"
     }
   ]
 }

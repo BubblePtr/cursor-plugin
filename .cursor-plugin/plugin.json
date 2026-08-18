@@ -9,6 +9,7 @@
   "homepage": "https://www.aihero.dev/s/skills-newsletter",
   "repository": "https://github.com/mattpocock/skills",
   "license": "MIT",
+  "logo": "assets/logo.svg",
   "keywords": [
     "engineering",
     "skills",

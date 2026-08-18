@@ -71,6 +71,7 @@ class SyncFromUpstreamTests(unittest.TestCase):
                 ["./skills/engineering/tdd", "./skills/productivity/grill-me"],
             )
             self.assertEqual(plugin["license"], "MIT")
+            self.assertEqual(plugin["logo"], "assets/logo.svg")
 
             self.assertEqual(lock["upstream"], "https://github.com/mattpocock/skills.git")
             self.assertEqual(lock["sha"], "abc123def")

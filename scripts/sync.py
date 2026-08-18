@@ -110,6 +110,7 @@ def sync_from_upstream(
         "homepage": manifest.get("homepage"),
         "repository": manifest.get("repository", UPSTREAM_URL),
         "license": manifest.get("license", "MIT"),
+        "logo": "assets/logo.svg",
         "keywords": manifest.get("keywords", []),
         "skills": copied,
     }
