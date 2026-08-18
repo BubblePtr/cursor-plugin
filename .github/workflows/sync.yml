@@ -1,0 +1,35 @@
+name: Daily skill sync
+
+on:
+  schedule:
+    # 09:00 Asia/Shanghai
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sync promoted skills
+        run: |
+          python3 scripts/test_sync.py
+          python3 scripts/sync.py
+      - name: Commit if upstream moved
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No skill changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          sha="$(python3 -c 'import json; print(json.load(open("sources.lock.json"))["sha"][:7])')"
+          git add -A
+          git commit -m "chore(sync): mattpocock/skills@${sha}"
+          git push
