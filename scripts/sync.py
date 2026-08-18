@@ -16,6 +16,7 @@ UPSTREAM_URL = "https://github.com/mattpocock/skills.git"
 CACHE_DIR = ROOT / ".cache" / "mattpocock-skills"
 PLUGIN_NAME = "cursor-plugin"
 PLUGIN_DISPLAY_NAME = "cursor-plugin"
+ALLOWED_BUCKETS = ("engineering", "productivity")
 
 
 def _run(args: list[str], cwd: Path) -> str:
@@ -36,8 +37,16 @@ def fetch_upstream(cache_dir: Path = CACHE_DIR) -> str:
     return _run(["git", "rev-parse", "HEAD"], cwd=cache_dir)
 
 
-def _normalize_skill_rel(rel: str) -> str:
-    return rel[2:] if rel.startswith("./") else rel
+def _discover_bucket_skills(upstream: Path) -> list[str]:
+    found: list[str] = []
+    for bucket in ALLOWED_BUCKETS:
+        bucket_dir = upstream / "skills" / bucket
+        if not bucket_dir.is_dir():
+            continue
+        for skill_dir in sorted(bucket_dir.iterdir()):
+            if skill_dir.is_dir() and (skill_dir / "SKILL.md").is_file():
+                found.append(f"skills/{bucket}/{skill_dir.name}")
+    return found
 
 
 def sync_from_upstream(
@@ -48,8 +57,13 @@ def sync_from_upstream(
     now: datetime | None = None,
 ) -> dict[str, Any]:
     manifest_path = upstream / ".claude-plugin" / "plugin.json"
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    skill_rels = [_normalize_skill_rel(rel) for rel in manifest["skills"]]
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.is_file() else {}
+    skill_rels = _discover_bucket_skills(upstream)
+    if not skill_rels:
+        raise SystemExit(
+            "no skills found under "
+            + ", ".join(f"skills/{bucket}/" for bucket in ALLOWED_BUCKETS)
+        )
 
     missing = [rel for rel in skill_rels if not (upstream / rel / "SKILL.md").is_file()]
     if missing:
@@ -88,8 +102,8 @@ def sync_from_upstream(
         "name": PLUGIN_NAME,
         "displayName": PLUGIN_DISPLAY_NAME,
         "description": (
-            "Personal Cursor plugin. Currently vendors Matt Pocock's promoted "
-            "engineering and productivity skills (MIT)."
+            "Personal Cursor plugin. Vendors Matt Pocock's engineering and "
+            "productivity skills only (MIT)."
         ),
         "version": manifest.get("version", "0.0.0"),
         "author": {"name": "void"},

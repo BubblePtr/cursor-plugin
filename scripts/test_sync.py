@@ -77,6 +77,48 @@ class SyncFromUpstreamTests(unittest.TestCase):
             self.assertEqual(lock["version"], "1.2.3")
             self.assertEqual(len(lock["skills"]), 2)
 
+    def test_keeps_only_engineering_and_productivity_buckets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            upstream = Path(tmp) / "upstream"
+            dest = Path(tmp) / "dest"
+            dest.mkdir()
+            _write_skill(upstream, "skills/engineering/tdd", "# tdd\n")
+            _write_skill(upstream, "skills/engineering/new-in-bucket", "# extra\n")
+            _write_skill(upstream, "skills/productivity/grill-me", "# grill-me\n")
+            _write_skill(upstream, "skills/misc/migrate-to-shoehorn", "# no\n")
+            _write_skill(upstream, "skills/in-progress/loop-me", "# no\n")
+            (upstream / ".claude-plugin").mkdir()
+            (upstream / ".claude-plugin" / "plugin.json").write_text(
+                json.dumps(
+                    {
+                        "name": "mattpocock-skills",
+                        "version": "1.2.3",
+                        "skills": [
+                            "./skills/engineering/tdd",
+                            "./skills/productivity/grill-me",
+                            "./skills/misc/migrate-to-shoehorn",
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            lock = sync_from_upstream(upstream=upstream, dest=dest, sha="abc")
+
+            self.assertTrue((dest / "skills/engineering/tdd/SKILL.md").is_file())
+            self.assertTrue((dest / "skills/engineering/new-in-bucket/SKILL.md").is_file())
+            self.assertTrue((dest / "skills/productivity/grill-me/SKILL.md").is_file())
+            self.assertFalse((dest / "skills/misc").exists())
+            self.assertFalse((dest / "skills/in-progress").exists())
+            self.assertEqual(
+                lock["skills"],
+                [
+                    "./skills/engineering/new-in-bucket",
+                    "./skills/engineering/tdd",
+                    "./skills/productivity/grill-me",
+                ],
+            )
+
     def test_replaces_previously_vendored_skills_that_left_the_manifest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             upstream = Path(tmp) / "upstream"

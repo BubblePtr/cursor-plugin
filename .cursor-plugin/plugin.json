@@ -1,7 +1,7 @@
 {
   "name": "cursor-plugin",
   "displayName": "cursor-plugin",
-  "description": "Personal Cursor plugin. Currently vendors Matt Pocock's promoted engineering and productivity skills (MIT).",
+  "description": "Personal Cursor plugin. Vendors Matt Pocock's engineering and productivity skills only (MIT).",
   "version": "1.2.3",
   "author": {
     "name": "void"

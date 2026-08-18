@@ -1,6 +1,6 @@
 # cursor-plugin
 
-个人用的 Cursor 本地插件。现在只 vendor [mattpocock/skills](https://github.com/mattpocock/skills) 的 promoted 流程 skill（MIT），方便自己装、自己每天同步。不做分发。
+个人用的 Cursor 本地插件。现在只 vendor [mattpocock/skills](https://github.com/mattpocock/skills) 里 `engineering` 和 `productivity` 两个目录（MIT），方便自己装、自己每天同步。不做分发。
 
 ## 本机安装
 
