@@ -1,0 +1,16 @@
+{
+  "name": "cursor-plugin",
+  "owner": {
+    "name": "void"
+  },
+  "metadata": {
+    "description": "Personal Cursor plugin vendoring Matt Pocock engineering and productivity skills"
+  },
+  "plugins": [
+    {
+      "name": "cursor-plugin",
+      "source": ".",
+      "description": "Matt Pocock engineering and productivity skills"
+    }
+  ]
+}
