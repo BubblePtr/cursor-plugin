@@ -2,7 +2,7 @@
   "upstream": "https://github.com/mattpocock/skills.git",
   "sha": "959a8e9f1edc3adbe2f7e3054bb6fbefa6696260",
   "version": "1.2.3",
-  "synced_at": "2026-09-16T05:24:00Z",
+  "synced_at": "2026-09-17T05:33:00Z",
   "skills": [
     "./skills/engineering/ask-matt",
     "./skills/engineering/code-review",
